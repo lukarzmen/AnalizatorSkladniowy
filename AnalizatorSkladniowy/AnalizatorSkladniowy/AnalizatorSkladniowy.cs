@@ -14,6 +14,7 @@ namespace AnalizatorSkladniowy
         private char[] firstWp = { '+','-',':','*','^' };
         private char[] firstRp = { '.' };
         private char[] firstLp = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        private readonly int dlugoscCiagu;
 
         char AktualnieAnalizowanyZnak => analizowanyCiag[indeksZnakuWAnalizowanymCiagu];
 
@@ -21,6 +22,7 @@ namespace AnalizatorSkladniowy
         {
             this.analizowanyCiag = tekstDoAnalizy.ToCharArray();
             indeksZnakuWAnalizowanymCiagu = 0;
+            this.dlugoscCiagu = tekstDoAnalizy.Count();
         }
 
         public void Analizuj()
@@ -30,6 +32,8 @@ namespace AnalizatorSkladniowy
 
         private void S()
         {
+            if (CzyZakonczonoCiag())
+                return;
             W();
             if (AktualnieAnalizowanyZnak == ';')
                 indeksZnakuWAnalizowanymCiagu++;
@@ -40,6 +44,8 @@ namespace AnalizatorSkladniowy
 
         private void Z()
         {
+            if (CzyZakonczonoCiag())
+                return;
             if (!firstZ.Contains(AktualnieAnalizowanyZnak))
                 return;
             W();
@@ -52,12 +58,16 @@ namespace AnalizatorSkladniowy
 
         private void W()
         {
+            if (CzyZakonczonoCiag())
+                return;
             P();
             Wp();
         }
 
         private void Wp()
         {
+            if (CzyZakonczonoCiag())
+                return;
             if (!firstWp.Contains(AktualnieAnalizowanyZnak))
                 return;
 
@@ -66,7 +76,8 @@ namespace AnalizatorSkladniowy
         }
         private void P()
         {
-            
+            if (CzyZakonczonoCiag())
+                return;
             if (AktualnieAnalizowanyZnak == '(')
             {
                 indeksZnakuWAnalizowanymCiagu++;
@@ -82,12 +93,16 @@ namespace AnalizatorSkladniowy
         }
 
         private void R()
-        { 
+        {
+            if (CzyZakonczonoCiag())
+                return;
             L();
             Rp();
         }
         private void Rp()
         {
+            if (CzyZakonczonoCiag())
+                return;
             if (!firstRp.Contains(AktualnieAnalizowanyZnak))
                 return;
             if (AktualnieAnalizowanyZnak == '.')
@@ -100,13 +115,17 @@ namespace AnalizatorSkladniowy
         }
 
         private void L()
-        { 
+        {
+            if (CzyZakonczonoCiag())
+                return;
             C();
             Lp();
         }
 
         private void Lp()
         {
+            if (CzyZakonczonoCiag())
+                return;
             if (!firstLp.Contains(AktualnieAnalizowanyZnak))
                 return;
             L();
@@ -114,7 +133,9 @@ namespace AnalizatorSkladniowy
         }
         private void O()
         {
-            switch(AktualnieAnalizowanyZnak)
+            if (CzyZakonczonoCiag())
+                return;
+            switch (AktualnieAnalizowanyZnak)
             {
                 case '*':
                     indeksZnakuWAnalizowanymCiagu++;
@@ -139,6 +160,8 @@ namespace AnalizatorSkladniowy
 
         private void C()
         {
+            if (CzyZakonczonoCiag())
+                return;
             switch (AktualnieAnalizowanyZnak)
             {
                 case '0':
@@ -174,6 +197,11 @@ namespace AnalizatorSkladniowy
                 default:
                     throw new BladSkladniowy();
             }
+        }
+
+        private bool CzyZakonczonoCiag()
+        {
+            return indeksZnakuWAnalizowanymCiagu > dlugoscCiagu -1;
         }
     }
 }
